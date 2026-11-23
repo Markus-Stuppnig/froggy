@@ -13,6 +13,7 @@ Volume=%h/froggy/deploy/Caddyfile:/etc/caddy/Caddyfile:ro,Z
 Volume=caddy-data:/data
 Volume=caddy-config:/config
 Environment=SITE_ADDRESS=:80
+EnvironmentFile=%h/froggy/deploy/secrets.env
 
 [Service]
 Restart=always

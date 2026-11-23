@@ -1,3 +1,18 @@
 {$SITE_ADDRESS:localhost} {
+	encode zstd gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		X-Frame-Options DENY
+	}
+
+	# MCP ist nur intern gedacht (Open WebUI spricht froggy:8000/mcp direkt an).
+	# Öffentlich freigeben: diese Zeile löschen und /mcp aus dem Auth-Bereich
+	# nehmen, siehe docs/README.md. Die App prüft den Bearer-Token selbst.
+	respond /mcp* 404
+
+	basic_auth {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
 	reverse_proxy froggy:8000
 }

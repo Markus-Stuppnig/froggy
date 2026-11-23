@@ -1,16 +1,27 @@
 {
   "tasks": {
-    "dev": "deno run --watch --allow-net --allow-env main.ts",
-    "start": "deno run --allow-net --allow-env main.ts",
-    "test": "deno test",
+    "dev": "deno run --watch --allow-net --allow-env --allow-read=static,data --allow-write=data main.ts",
+    "start": "deno run --allow-net --allow-env --allow-read=static,data --allow-write=data main.ts",
+    "test": "deno test --allow-env --allow-read --allow-write",
     "check": "deno fmt --check && deno lint && deno check main.ts"
   },
   "imports": {
     "hono": "jsr:@hono/hono@4.13.19",
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/path": "jsr:@std/path@1"
   },
   "compilerOptions": {
     "jsx": "precompile",
     "jsxImportSource": "hono/jsx"
+  },
+  "fmt": {
+    "exclude": [
+      "static/htmx.min.js"
+    ]
+  },
+  "lint": {
+    "exclude": [
+      "static/htmx.min.js"
+    ]
   }
 }
