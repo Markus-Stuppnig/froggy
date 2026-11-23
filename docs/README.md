@@ -42,7 +42,8 @@ Froggy: einfache „Eat that frog“-Todo-App (PWA). Deno 2.9 + Hono 4.13 + htmx
 | `tests/`           | Tests (`deno task test`)                                      |
 | `Containerfile`    | Image auf Basis `denoland/deno:alpine`                        |
 | `deploy/Caddyfile` | Reverse-Proxy mit Basic Auth                                  |
-| `deploy/quadlet/`  | Quadlet-Units (Netzwerk, Build, App, Caddy)                   |
+| `deploy/quadlet/`  | Quadlet-Units (Netzwerk, Volume, Build, App)                  |
+| `deploy/local/`    | `caddy.container` nur für lokale Tests                        |
 
 ## Entwicklung
 
@@ -54,19 +55,23 @@ deno task check   # fmt, lint, typecheck
 
 ## Deployment (rootless Podman)
 
-Das Repo muss unter `~/froggy` liegen (die Units referenzieren `%h/froggy`).
+Das Repo muss unter `~/zukunftssicher/froggy` liegen (die Units referenzieren
+`%h/zukunftssicher/froggy`, bei anderem Pfad dort anpassen). Einen eigenen Caddy
+bringt man selbst mit (siehe unten).
 
 ```sh
+cp deploy/secrets.env.example deploy/secrets.env   # MCP_TOKEN setzen
 mkdir -p ~/.config/containers/systemd
 cp deploy/quadlet/* ~/.config/containers/systemd/
 systemctl --user daemon-reload
-systemctl --user start caddy   # zieht froggy, froggy-build und das Netzwerk nach
+systemctl --user start froggy   # zieht froggy-build, Volume und Netzwerk nach
+podman network connect froggy caddy   # bestehenden Caddy anbinden
 ```
 
-Aufruf: http://localhost:8080. Für eine echte Domain in `caddy.container`
-`SITE_ADDRESS=example.org` setzen und die Ports auf 80/443 mappen (rootless:
-`net.ipv4.ip_unprivileged_port_start=80`). Caddy holt dann automatisch
-Zertifikate.
+Nur für lokale Tests mit mitgeliefertem Caddy (http://localhost:8080):
+`cp deploy/local/caddy.container ~/.config/containers/systemd/` und
+`systemctl --user start caddy`. Für eine echte Domain `SITE_ADDRESS=example.org`
+setzen und Ports auf 80/443 mappen.
 
 Autostart ohne Login: `loginctl enable-linger $USER`.
 

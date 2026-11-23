@@ -1,4 +1,4 @@
 [Build]
 ImageTag=localhost/froggy:latest
-File=%h/froggy/Containerfile
-SetWorkingDirectory=%h/froggy
+File=%h/zukunftssicher/froggy/Containerfile
+SetWorkingDirectory=%h/zukunftssicher/froggy

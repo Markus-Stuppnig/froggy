@@ -8,7 +8,7 @@ ContainerName=froggy
 Image=froggy.build
 Network=froggy.network
 Environment=PORT=8000
-EnvironmentFile=%h/froggy/deploy/secrets.env
+EnvironmentFile=%h/zukunftssicher/froggy/deploy/secrets.env
 Volume=froggy-data.volume:/data
 HealthCmd=deno eval "const r = await fetch('http://localhost:8000/health'); Deno.exit(r.ok ? 0 : 1)"
 
