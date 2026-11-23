@@ -6,7 +6,7 @@ Requires=froggy-build.service
 [Container]
 ContainerName=froggy
 Image=froggy.build
-Network=froggy.network
+Network=zukunftssicher.network
 Environment=PORT=8000
 EnvironmentFile=%h/zukunftssicher/froggy/deploy/secrets.env
 Volume=froggy-data.volume:/data

@@ -42,8 +42,8 @@ Froggy: einfache „Eat that frog“-Todo-App (PWA). Deno 2.9 + Hono 4.13 + htmx
 | `tests/`           | Tests (`deno task test`)                                      |
 | `Containerfile`    | Image auf Basis `denoland/deno:alpine`                        |
 | `deploy/Caddyfile` | Reverse-Proxy mit Basic Auth                                  |
-| `deploy/quadlet/`  | Quadlet-Units (Netzwerk, Volume, Build, App)                  |
-| `deploy/local/`    | `caddy.container` nur für lokale Tests                        |
+| `deploy/quadlet/`  | Quadlet-Units (Volume, Build, App)                            |
+| `deploy/local/`    | `caddy.container` + `froggy.network` nur für lokale Tests    |
 
 ## Entwicklung
 
@@ -57,19 +57,21 @@ deno task check   # fmt, lint, typecheck
 
 Das Repo muss unter `~/zukunftssicher/froggy` liegen (die Units referenzieren
 `%h/zukunftssicher/froggy`, bei anderem Pfad dort anpassen). Einen eigenen Caddy
-bringt man selbst mit (siehe unten).
+bringt man selbst mit (siehe unten). `froggy` hängt im bestehenden Netzwerk
+`zukunftssicher.network` (Quadlet-Datei muss in `~/.config/containers/systemd/`
+liegen).
 
 ```sh
 cp deploy/secrets.env.example deploy/secrets.env   # MCP_TOKEN setzen
 mkdir -p ~/.config/containers/systemd
 cp deploy/quadlet/* ~/.config/containers/systemd/
 systemctl --user daemon-reload
-systemctl --user start froggy   # zieht froggy-build, Volume und Netzwerk nach
-podman network connect froggy caddy   # bestehenden Caddy anbinden
+systemctl --user start froggy   # zieht froggy.build, Volume und Netzwerk nach
 ```
 
 Nur für lokale Tests mit mitgeliefertem Caddy (http://localhost:8080):
-`cp deploy/local/caddy.container ~/.config/containers/systemd/` und
+`cp deploy/local/* ~/.config/containers/systemd/`, in `froggy.container` das
+Netzwerk auf `froggy.network` stellen und
 `systemctl --user start caddy`. Für eine echte Domain `SITE_ADDRESS=example.org`
 setzen und Ports auf 80/443 mappen.
 
